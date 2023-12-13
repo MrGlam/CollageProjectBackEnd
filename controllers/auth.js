@@ -28,8 +28,9 @@ async function signup(req, res) {
 
 async function login(req, res) {
   try {
+    console.log(req);
     const { username, password } = req.body;
-
+    console.log(username);
     // Check if the user exists
     const user = await User.findOne({ username });
     if (!user) return res.status(401).json({ message: 'Invalid credentials' });
@@ -39,15 +40,16 @@ async function login(req, res) {
     if (!passwordMatch) return res.status(401).json({ message: 'Invalid credentials' });
 
     // Generate a JWT token upon successful login
-    const accessToken = jwt.sign({ username: user.username }, secretKey);
-
-    // Return the token
-    res.json({ accessToken });
+    const token = jwt.sign({ username: user.username }, secretKey);
+    
+    // Return the token as { token }
+    res.json({ token });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 }
+
 
 async function logout(req, res) {
   // Perform any logout-related actions (e.g., token blacklist)
